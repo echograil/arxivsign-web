@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ArxivSIGN — About</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0d0d1a;color:#e8e8f0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.7;font-size:15px}
+a{color:#8ab4ff;text-decoration:none}
+a:hover{text-decoration:underline}
+.page{width:min(760px,94vw);margin:0 auto;padding:48px 0 96px}
+
+.hero{margin-bottom:56px}
+.hero-tag{font-size:11px;color:#555a6e;letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px}
+.hero h1{font-size:30px;font-weight:500;color:#ffd600;margin-bottom:14px;line-height:1.3}
+.hero-desc{font-size:14px;color:#9aa0b4;line-height:1.9;max-width:580px}
+
+.sec{margin-bottom:52px}
+.sec-label{font-size:11px;color:#555a6e;text-transform:uppercase;letter-spacing:.1em;margin-bottom:22px;padding-bottom:10px;border-bottom:0.5px solid #1e1e30}
+
+p{margin-bottom:12px;color:#c8cad4;font-size:14px;line-height:1.85}
+p:last-child{margin-bottom:0}
+
+.decisions{display:flex;flex-direction:column;gap:0}
+.dec{padding:16px 0;border-bottom:0.5px solid #1a1a28}
+.dec:last-child{border-bottom:none}
+.dec-head{display:flex;align-items:baseline;gap:10px;margin-bottom:6px}
+.dec-title{font-size:14px;font-weight:500;color:#e8e8f0}
+.dec-badge{font-size:10px;padding:2px 7px;border-radius:4px;background:#1a1a30;border:1px solid #2a2a4a;color:#555a6e;flex-shrink:0}
+.dec-body{font-size:13px;color:#9aa0b4;line-height:1.75;padding-left:0}
+
+.steps{display:flex;flex-direction:column;gap:20px}
+.step{background:#141428;border:1px solid #1e1e38;border-radius:10px;padding:18px 20px}
+.step-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.step-num{width:22px;height:22px;border-radius:50%;background:#0d0d1a;border:1px solid #2a2a4a;color:#555a6e;font-size:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step-title{font-size:13px;font-weight:500;color:#e8e8f0}
+.step-sub{font-size:11px;color:#555a6e;margin-left:auto}
+.step-body{font-size:13px;color:#9aa0b4;line-height:1.75}
+.step-body .turn{color:#c8cad4;margin-top:6px}
+.turn::before{content:"→ ";color:#6dbf6d}
+
+.pits{display:flex;flex-direction:column;gap:10px}
+.pit{border-left:2px solid #2a2a4a;padding:10px 0 10px 16px}
+.pit-q{font-size:13px;color:#555a6e;margin-bottom:4px}
+.pit-a{font-size:13px;color:#9aa0b4;line-height:1.7}
+.pit-a em{color:#c8cad4;font-style:normal}
+
+.stack{display:flex;flex-wrap:wrap;gap:8px}
+.stack-item{padding:4px 11px;border-radius:5px;font-size:12px;background:#141428;border:1px solid #1e1e38;color:#9aa0b4}
+
+.next-list{display:flex;flex-direction:column;gap:8px}
+.next-item{font-size:13px;color:#9aa0b4;line-height:1.7;padding-left:16px;position:relative}
+.next-item::before{content:"";width:4px;height:4px;border-radius:50%;background:#2a2a4a;position:absolute;left:2px;top:8px}
+
+.footer{margin-top:64px;padding-top:20px;border-top:0.5px solid #1a1a28;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.footer-left{font-size:12px;color:#555a6e}
+.footer-links{display:flex;gap:20px}
+.footer-links a{font-size:12px;color:#555a6e}
+.footer-links a:hover{color:#9aa0b4;text-decoration:none}
+</style>
+</head>
+<body>
+<main class="page">
+
+<div class="hero">
+  <div class="hero-tag">ArxivSIGN · About</div>
+  <h1>每天追论文，太累了</h1>
+  <p class="hero-desc">arXiv 每天发布数百篇 AI 论文。ArxivSIGN 是一个自用工具：自动采集、AI 改写成播客摘要、语音合成，每天生成一份可以听的论文日报。从想法到线上跑通，完整经历了数据、模型、前端、部署四个层面的设计与迭代。</p>
+</div>
+
+<div class="sec">
+  <div class="sec-label">几个主动的设计选型</div>
+  <div class="decisions">
+
+    <div class="dec">
+      <div class="dec-head">
+        <div class="dec-title">格式优先于功能</div>
+        <div class="dec-badge">Step 1</div>
+      </div>
+      <div class="dec-body">采集阶段就确定了统一的 paper_key 格式和字段结构。这个决定让后续每一步都能独立演化——Step2 不关心采集逻辑，Step4 不关心摘要生成，各步之间只通过 JSON 文件交换数据。后来 merger.py 出现新来源覆盖旧数据的问题，因为格式稳定，只改了 save_result 一个函数，其余管线不需要动。</div>
+    </div>
+
+    <div class="dec">
+      <div class="dec-head">
+        <div class="dec-title">生产和评判分离，不让同一个模型既写又审</div>
+        <div class="dec-badge">Step 2</div>
+      </div>
+      <div class="dec-body">最初尝试让 LLM 质检员判断"有没有元评论混入正文"，发现它把"必须有误导性说明"当成错误来扣分——质检员的元认知不可靠。改成生产者专注生成、打分员只问"听众30秒内能不能抓住重点"，两个角色目标清晰，Best-of-5 选优后质量稳定提升，且有对照实验数据支撑（tts_ready_v2 vs tts_ready_RAG）。</div>
+    </div>
+
+    <div class="dec">
+      <div class="dec-head">
+        <div class="dec-title">卡片而不是聚类图表</div>
+        <div class="dec-badge">Step 4</div>
+      </div>
+      <div class="dec-body">Step4 最初做的是关键词聚类可视化，发现论文关键词存在泛用词（如 "LLM"、"agent"）和高度独有词共存，自带去重效果但聚类边界模糊，信噪比低。改为按 topic_tag 分组的卡片展示，关键词降权为辅助信息，信息层级更清晰，也更容易接入 TTS 音频。</div>
+    </div>
+
+    <div class="dec">
+      <div class="dec-head">
+        <div class="dec-title">静态 HTML + 分离部署，源码不暴露</div>
+        <div class="dec-badge">部署</div>
+      </div>
+      <div class="dec-body">本地管线生成静态 HTML，推送到 GitHub Pages 展示；反馈服务单独部署到 Railway。两者完全解耦：管线代码、提示词、API Key 全部留在本地，线上只有内容和接口。更新时只需推送新 HTML，不触碰服务端逻辑。</div>
+    </div>
+
+    <div class="dec">
+      <div class="dec-head">
+        <div class="dec-title">本地与云端 API 可切换，不绑定单一方案</div>
+        <div class="dec-badge">Step 3</div>
+      </div>
+      <div class="dec-body">TTS 模块封装了统一的 run_tts() 入口，TTS_BACKEND 变量控制走本地 sovitsTTS 还是云端 API。本地 30G 模型跑在移动硬盘，上线后切换 API 只改一行配置，管线其他部分零改动。LLM 摘要同理，经过模型选型、价格与效果权衡后确定方案，接口层隔离了具体模型的细节。</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-label">每一步的关键转折</div>
+  <div class="steps">
+
+    <div class="step">
+      <div class="step-head">
+        <div class="step-num">1</div>
+        <div class="step-title">采集：格式决策 + 双源合并</div>
+        <div class="step-sub">arXiv API · HuggingFace Papers</div>
+      </div>
+      <div class="step-body">
+        双源数据格式不一致，早期统一了 paper_key 命名规则和字段结构，避免了后续大量字段映射工作。
+        <div class="turn">新来源数据进来时会覆盖旧数据而不是合并，排查后在 merger.py 的 save_result 加入历史累积逻辑，按 paper_key 去重追加，已有字段由新数据更新。</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <div class="step-num">2</div>
+        <div class="step-title">摘要：从跑通到可生产质量</div>
+        <div class="step-sub">LangGraph · LlamaIndex · Best-of-5</div>
+      </div>
+      <div class="step-body">
+        模型选型和价格效果权衡花了较多时间，提示词定型和可生产质量评估经过多轮迭代。管线跑通后回来尝试 LangGraph loop，发现质检员元认知不可靠后转向生产打分分离的 Best-of-5。
+        <div class="turn">提前预设了 Step3 TTS 模型的文本处理长度限制，摘要生成阶段就控制了每段字数，避免了 TTS 截断问题。</div>
+        <div class="turn">引入 LlamaIndex RAG，以历史高分稿为 few-shot 示例，通过对照实验量化验证效果。</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <div class="step-num">3</div>
+        <div class="step-title">TTS：成熟管线的迁移与适配</div>
+        <div class="step-sub">GPT-SoVITS v4 · 中英混合</div>
+      </div>
+      <div class="step-body">
+        基于已有的书籍 TTS 管线改造，复用了路径哈希缓存和断点续跑逻辑。
+        <div class="turn">论文摘要中英混合的特点导致纯中文模型发音异常，尝试了双语参考音频和语言参数调整，确认 text_lang="zh" 即为中英混合模式。</div>
+        <div class="turn">本地/云端 API 切换设计让上线后的迁移成本降到最低。</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <div class="step-num">4</div>
+        <div class="step-title">前端：从聚类图表到卡片展示</div>
+        <div class="step-sub">信息层级 · 交互细节</div>
+      </div>
+      <div class="step-body">
+        原始方案是关键词聚类可视化，发现聚类效果差后转为按 topic 分组的卡片展示，关键词作为辅助信息降权显示。
+        <div class="turn">卡片展开/收起与音频播放按钮绑定在同一元素上，导致点播放时触发展开。用 stopPropagation 将两个交互完全分离。</div>
+        <div class="turn">Top5 排序逻辑与分类展示逻辑在多次迭代中偶发不同步，类似的维护不同步问题在 feedback 等多处也出现过。通过保留旧版存档和版本号命名（v2、v3、v4）保持了迭代稳定性。</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-label">值得记录的三个坑</div>
+  <div class="pits">
+    <div class="pit">
+      <div class="pit-q">LLM 质检员元认知不可靠</div>
+      <div class="pit-a">用规则约束打分员后，它把"必须有误导性说明"理解成了扣分项。<em>放弃规则化质检，改为只问听众体验，打分稳定性和区分度都提升了。</em></div>
+    </div>
+    <div class="pit">
+      <div class="pit-q">GitHub API 写入 sha 冲突</div>
+      <div class="pit-a">反馈写入 feedback.jsonl 时文件 sha 过期，PUT 请求返回 409。<em>改为每次写入前先 GET 最新 sha，再带 sha 提交，冲突消失。</em></div>
+    </div>
+    <div class="pit">
+      <div class="pit-q">TTS \n\n 被原样念出来</div>
+      <div class="pit-a">tts_script 存的是 JSON 转义换行符，clean_for_tts 里 replace("\n\n") 没有效果。<em>改为同时处理转义和真实换行符，并用正则清理重复标点。</em></div>
+    </div>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-label">技术栈</div>
+  <div class="stack">
+    <span class="stack-item">Python</span>
+    <span class="stack-item">LangGraph</span>
+    <span class="stack-item">LangChain</span>
+    <span class="stack-item">LlamaIndex</span>
+    <span class="stack-item">GPT-SoVITS v4</span>
+    <span class="stack-item">Flask</span>
+    <span class="stack-item">GitHub Pages</span>
+    <span class="stack-item">Railway</span>
+    <span class="stack-item">arXiv API</span>
+    <span class="stack-item">HuggingFace Papers</span>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-label">下一步</div>
+  <div class="next-list">
+    <div class="next-item">GitHub Actions 定时触发，实现真正无人工干预的每日更新</div>
+    <div class="next-item">反馈数据驱动 Top5 排序权重，用户点赞影响次日推荐</div>
+    <div class="next-item">LlamaIndex 接入 arXiv 原文 PDF，卡片支持检索原文段落</div>
+    <div class="next-item">音频迁移至对象存储，突破 GitHub Pages 1GB 限制</div>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="footer-left">ArxivSIGN · 个人项目 · 2026</div>
+  <div class="footer-links">
+    <a href="index.html">← 返回论文墙</a>
+    <a href="https://github.com/echograil/arxivsign-web" target="_blank">GitHub</a>
+  </div>
+</div>
+
+</main>
+</body>
+</html>
