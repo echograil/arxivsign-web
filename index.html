@@ -2508,7 +2508,7 @@ async function submitFeedback() {
   const text = document.getElementById('fb-text').value.trim();
   if (!text) { closeFeedback(); return; }
   try {
-    await fetch('https://web-production-c6f83.up.railway.app//feedback', {
+    await fetch('https://web-production-c6f83.up.railway.app/feedback/feedback', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({text, date: new Date().toISOString()})
