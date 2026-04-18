@@ -3,7 +3,7 @@
 每日 arXiv + HuggingFace 论文采集 → LangGraph Agent 摘要生成 → SovitsTTS 语音合成 → 静态 HTML 卡片展示 + Railway 反馈服务。
 
 **公网地址：** https://echograil.github.io/arxivsign-web  
-**关于本站：[ArxivSIGN — About](https://echograil.github.io/arxivsign-web/about.html)
+**关于本站：**[ArxivSIGN — About](https://echograil.github.io/arxivsign-web/about.html)
 
 ---
 
